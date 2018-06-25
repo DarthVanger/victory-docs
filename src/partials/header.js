@@ -32,7 +32,7 @@ class VictoryHeader extends Component {
 
     return (
       <Header className={className} logoProject={victoryLogo}>
-        <div className="default" style={{ textAlign: "left", paddingBottom: 0 }}>
+        <div className="default" style={{ paddingBottom: 0 }}>
           {victoryLink}
           <Link to="/about/">About</Link>
           <Link to="/docs/">Docs</Link>
