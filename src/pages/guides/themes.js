@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Playground from "component-playground";
 import { assign } from "lodash";
-import Link from "gatsby-link";
+import { Link } from "gatsby";
 
 import Footer from "../../partials/footer";
 import PureRender from "../../partials/guides/themes/pure-render";
@@ -22,10 +22,10 @@ class Themes extends React.Component {
     // just load once
     this.themeTexts = {
       grayscale: this.processCodeText(
-        require("!!raw!../../partials/guides/themes/grayscale.example.js")
+        require("!!raw-loader!../../partials/guides/themes/grayscale.example.js")
       ),
       material: this.processCodeText(
-        require("!!raw!../../partials/guides/themes/material.example.js")
+        require("!!raw-loader!../../partials/guides/themes/material.example.js")
       )
     };
   }

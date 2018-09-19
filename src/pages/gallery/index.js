@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import Link from "gatsby-link";
+import { Link, graphql } from "gatsby";
 import * as Victory from "victory";
 
 // Child Components

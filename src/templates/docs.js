@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
-
+import { graphql } from "gatsby";
 import Footer from "../partials/footer";
 import Playground from "../partials/playground";
 import Seo from "../partials/seo/index";

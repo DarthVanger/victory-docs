@@ -1,23 +1,71 @@
 const path = require("path");
 const _ = require("lodash");
 
-exports.modifyWebpackConfig = ({ config }) => {
-  // Do not transform SVG into data-uris
-  config.loader("url-loader", {
-    test: /\.(jpg|jpeg|png|gif|mp4|webm|wav|mp3|m4a|aac|oga)(\?.*)?$/,
-    loader: "url",
-    query: {
-      limit: 10000,
-      name: "static/[name].[hash:8].[ext]"
-    }
-  });
+exports.onCreateWebpackConfig = ({
+                                   stage,
+                                   rules,
+                                   loaders,
+                                   plugins,
+                                   actions,
+                                 }) => {
 
-  // Instead load <svg> elements directly into the DOM
-  config.loader("raw-loader", {
-    test: /\.(svg)(\?.*)?$/,
-    loader: "raw"
-  });
+  // console.log(stage, 's', rules, 'r', loaders, 'l', plugins, 'p');
+  actions.setWebpackConfig({module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: ['@babel/plugin-proposal-class-properties']
+          }
+        }
+      },
+      {
+      test: /\.(jpg|jpeg|png|gif|mp4|webm|wav|mp3|m4a|aac|oga)(\?.*)?$/,
+        // use: "url-loader",
+    loader: "url-loader",
+    query: {
+    limit: 10000,
+      name: "static/[name].[hash:8].[ext]"
+      }
+    },
+      {
+        test: /\.(svg)(\?.*)?$/,
+          loader: "raw-loader"
+      },
+      {
+        test: /\.css$/,
+        //use: ['style-loader', 'postcss-loader'],
+        loader: 'postcss-loader',
+        options: {
+          ident: 'postcss',
+          plugins: [
+            require('cssnano')()
+          ]
+        }
+      }
+  ]
+  }
+  })
 };
+  // Do not transform SVG into data-uris
+  // config.loader("url-loader", {
+  //   test: /\.(jpg|jpeg|png|gif|mp4|webm|wav|mp3|m4a|aac|oga)(\?.*)?$/,
+  //   loader: "url",
+  //   query: {
+  //     limit: 10000,
+  //     name: "static/[name].[hash:8].[ext]"
+  //   }
+  // });
+  //
+  // // Instead load <svg> elements directly into the DOM
+  // config.loader("raw-loader", {
+  //   test: /\.(svg)(\?.*)?$/,
+  //   loader: "raw"
+  // });
 
 // Add custom url pathname for blog posts.
 // eslint-disable-next-line max-statements

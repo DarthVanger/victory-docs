@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Fuse from "fuse.js";
-import Link from "gatsby-link";
+import { Link } from "gatsby";
 import { maxBy, findIndex, includes, last, isEmpty } from "lodash";
 import Introduction from "./components/introduction";
 import Category from "./components/category";
