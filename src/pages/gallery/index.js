@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import { Link, graphql } from "gatsby";
+import { Link, graphql, StaticQuery } from "gatsby";
 import * as Victory from "victory";
 
 // Child Components
@@ -9,6 +9,27 @@ import Footer from "../../partials/footer";
 import Icon from "../../partials/icon";
 
 import Preview from "../../partials/gallery/preview";
+
+// this query returns only gallery md
+export const query = graphql`
+  query GalleryQuery {
+    allMarkdownRemark(filter: { fields: { type: { eq: "gallery" } } }) {
+      edges {
+        node {
+          fields {
+            slug
+            raw
+          }
+          frontmatter {
+            id
+            title
+          }
+        }
+      }
+    }
+  }
+`;
+
 
 class Gallery extends React.Component {
   constructor(props) {
@@ -68,25 +89,31 @@ class Gallery extends React.Component {
   }
 
   render() {
-    const { data } = this.props;
-    const items = data.allMarkdownRemark.edges;
-    const previews = items.map((item, index) => {
-      return (
-        <div key={index} className="Gallery-item">
-          {this.renderPreviewItem(item.node)}
-        </div>
-      );
-    });
-
     return (
-      <div className="Page-content">
-        <article className="Article Article--noBottom">
-          <h1 className="u-noMargin">Gallery</h1>
-          <div className="Gallery">{previews}</div>
-        </article>
-        <Footer />
-      </div>
-    );
+      <StaticQuery
+        query={query}
+        render={(data) => {
+          const items = data.allMarkdownRemark.edges;
+          const previews = items.map((item, index) => {
+            return (
+              <div key={index} className="Gallery-item">
+                {this.renderPreviewItem(item.node)}
+              </div>
+            );
+          });
+
+          return (
+            <div className="Page-content">
+              <article className="Article Article--noBottom">
+                <h1 className="u-noMargin">Gallery</h1>
+                <div className="Gallery">{previews}</div>
+              </article>
+              <Footer />
+            </div>
+          );
+
+        }}
+      />);
   }
 }
 
@@ -99,23 +126,3 @@ Gallery.defaultProps = {
 };
 
 export default Gallery;
-
-// this query returns only gallery md
-export const query = graphql`
-  query GalleryQuery {
-    allMarkdownRemark(filter: { fields: { type: { eq: "gallery" } } }) {
-      edges {
-        node {
-          fields {
-            slug
-            raw
-          }
-          frontmatter {
-            id
-            title
-          }
-        }
-      }
-    }
-  }
-`;

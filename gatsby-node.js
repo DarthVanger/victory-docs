@@ -1,15 +1,8 @@
 const path = require("path");
 const _ = require("lodash");
 
-exports.onCreateWebpackConfig = ({
-                                   stage,
-                                   rules,
-                                   loaders,
-                                   plugins,
-                                   actions,
+exports.onCreateWebpackConfig = ({ actions
                                  }) => {
-
-  // console.log(stage, 's', rules, 'r', loaders, 'l', plugins, 'p');
   actions.setWebpackConfig({module: {
     rules: [
       {
@@ -19,7 +12,14 @@ exports.onCreateWebpackConfig = ({
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env', '@babel/preset-react'],
-            plugins: ['@babel/plugin-proposal-class-properties']
+            plugins: [
+              '@babel/plugin-syntax-dynamic-import',
+              '@babel/plugin-proposal-class-properties',
+              //TODO WIP: slug resolver logic currently broken which means
+              // the whole thing is borked, but if you just need to see something
+              // on your browser uncomment out this line:
+              // 'babel-plugin-remove-graphql-queries'
+            ]
           }
         }
       },
@@ -40,35 +40,12 @@ exports.onCreateWebpackConfig = ({
         test: /\.css$/,
         //use: ['style-loader', 'postcss-loader'],
         loader: 'postcss-loader',
-        options: {
-          ident: 'postcss',
-          plugins: [
-            require('cssnano')()
-          ]
-        }
       }
   ]
   }
   })
 };
-  // Do not transform SVG into data-uris
-  // config.loader("url-loader", {
-  //   test: /\.(jpg|jpeg|png|gif|mp4|webm|wav|mp3|m4a|aac|oga)(\?.*)?$/,
-  //   loader: "url",
-  //   query: {
-  //     limit: 10000,
-  //     name: "static/[name].[hash:8].[ext]"
-  //   }
-  // });
-  //
-  // // Instead load <svg> elements directly into the DOM
-  // config.loader("raw-loader", {
-  //   test: /\.(svg)(\?.*)?$/,
-  //   loader: "raw"
-  // });
 
-// Add custom url pathname for blog posts.
-// eslint-disable-next-line max-statements
 exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
   const { createNodeField } = boundActionCreators;
   let slug;

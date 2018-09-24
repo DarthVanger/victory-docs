@@ -17,20 +17,8 @@ module.exports = {
   },
   plugins: [
     "gatsby-plugin-react-helmet",
-    {
-      resolve: "gatsby-plugin-postcss",
-      // options: {
-      //   postCssPlugins: [
-      //     require("postcss-import")(),
-      //     require("postcss-url")({ url: "inline" }),
-      //     require("postcss-cssnext")(),
-      //     // Add plugins here:
-      //     require("postcss-inline-svg")(),
-      //     require("postcss-browser-reporter"),
-      //     require("postcss-reporter")
-      //   ]
-      // }
-    },
+     "gatsby-plugin-postcss",
+
     {
       resolve: "gatsby-source-filesystem",
       options: {
