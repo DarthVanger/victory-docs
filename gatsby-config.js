@@ -16,9 +16,23 @@ module.exports = {
     }
   },
   plugins: [
+    // You might think this would fully restore the magic gatsby v1 behavior,
+    // but you'd be wrong
+    // "gatsby-plugin-layout",
     "gatsby-plugin-react-helmet",
-     "gatsby-plugin-postcss",
+    "gatsby-plugin-postcss",
 
+    // Tried and discarded as possible alternatives to our custom webpack config
+
+    //"gatsby-plugin-sass",
+    // {
+    //   resolve: 'gatsby-plugin-react-svg',
+    //   options: {
+    //     rule: {
+    //       include: `/static/*.svg`
+    //     }
+    //   }
+    // },
     {
       resolve: "gatsby-source-filesystem",
       options: {

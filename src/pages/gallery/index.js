@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { Link, graphql, StaticQuery } from "gatsby";
 import * as Victory from "victory";
-
+import MainLayout from "../../layouts";
 // Child Components
 import Footer from "../../partials/footer";
 import Icon from "../../partials/icon";
@@ -103,13 +103,15 @@ class Gallery extends React.Component {
           });
 
           return (
-            <div className="Page-content">
-              <article className="Article Article--noBottom">
-                <h1 className="u-noMargin">Gallery</h1>
-                <div className="Gallery">{previews}</div>
-              </article>
-              <Footer />
-            </div>
+            <MainLayout>
+              <div className="Page-content">
+                <article className="Article Article--noBottom">
+                  <h1 className="u-noMargin">Gallery</h1>
+                  <div className="Gallery">{previews}</div>
+                </article>
+                <Footer />
+              </div>
+            </MainLayout>
           );
 
         }}

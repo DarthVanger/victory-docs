@@ -1,11 +1,10 @@
-//TODO WIP: replace with navigation from gatsby 2.0
-import { navigateTo } from "gatsby-link";
+import { navigate } from "gatsby";
 import config from "../../data/site-config";
 
 import catchLinks from "./catch-links";
 
 catchLinks(
   window,
-  (href) => navigateTo(href),
+  (href) => navigate(href),
   config.pathPrefix
 );

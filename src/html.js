@@ -5,28 +5,29 @@ import React from "react";
 import PropTypes from "prop-types";
 import favicon from "../static/logos/favicon.ico";
 
-let inlinedStyles = "";
-if (process.env.NODE_ENV === "production") {
-  try {
-    /* eslint import/no-webpack-loader-syntax: off */
-    inlinedStyles = require("!raw-loader!../public/styles.css");
-  } catch (e) {
-    /* eslint no-console: "off"*/
-    console.log(e);
-  }
-}
+// let inlinedStyles = "";
+// if (process.env.NODE_ENV === "production") {
+//   try {
+//     /* eslint import/no-webpack-loader-syntax: off */
+//     inlinedStyles = require("!raw-loader!../public/styles.css");
+//   } catch (e) {
+//     /* eslint no-console: "off"*/
+//     console.log(e);
+//   }
+// }
 
 class HTML extends React.Component {
   render() {
-    let css;
-    if (process.env.NODE_ENV === "production") {
-      css = (
-        <style
-          id="gatsby-inlined-css"
-          dangerouslySetInnerHTML={{ __html: inlinedStyles }}
-        />
-      );
-    }
+    // not required, per migration docs, unless it is, for $REASONS
+    // let css;
+    // if (process.env.NODE_ENV === "production") {
+    //   css = (
+    //     <style
+    //       id="gatsby-inlined-css"
+    //       dangerouslySetInnerHTML={{ __html: inlinedStyles }}
+    //     />
+    //   );
+    // }
     return (
       <html lang="en">
         <head>
@@ -40,7 +41,7 @@ class HTML extends React.Component {
 
           <link rel="shortcut icon" href={favicon} />
 
-          {css}
+          {/* css */}
 
           {/* Fonts */}
           <link

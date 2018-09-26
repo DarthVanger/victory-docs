@@ -1,8 +1,11 @@
 const path = require("path");
 const _ = require("lodash");
+const { createFilePath } = require(`gatsby-source-filesystem`);
 
-exports.onCreateWebpackConfig = ({ actions
+
+exports.onCreateWebpackConfig = ({ actions, getConfig
                                  }) => {
+
   actions.setWebpackConfig({module: {
     rules: [
       {
@@ -25,7 +28,6 @@ exports.onCreateWebpackConfig = ({ actions
       },
       {
       test: /\.(jpg|jpeg|png|gif|mp4|webm|wav|mp3|m4a|aac|oga)(\?.*)?$/,
-        // use: "url-loader",
     loader: "url-loader",
     query: {
     limit: 10000,
@@ -36,19 +38,63 @@ exports.onCreateWebpackConfig = ({ actions
         test: /\.(svg)(\?.*)?$/,
           loader: "raw-loader"
       },
-      {
-        test: /\.css$/,
-        //use: ['style-loader', 'postcss-loader'],
-        loader: 'postcss-loader',
-      }
+      // {
+      //  From readme at https://github.com/postcss/postcss-loader:
+      //  Use it after css-loader and style-loader, but before other preprocessor loaders like e.g sass|less|stylus-loader, if you use any.
+      //   // which I guess means, "don't use with gatsby plugins"
+      //   although there's an api option to replace the entire webpack config and compose it ourselves via getConfig
+      //   test: /\.css$/,
+      //   loader: "postcss-loader"
+      // }
   ]
   }
   })
 };
 
-exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
-  const { createNodeField } = boundActionCreators;
+
+exports.onCreateNode = ({ node, actions, getNode }) => {
+
   let slug;
+  const { createNodeField } = actions;
+  const { frontmatter } = node;
+  if (frontmatter) {
+    const { image } = frontmatter;
+    if (image) {
+      if (image.indexOf('/img') === 0) {
+        frontmatter.image = path.relative(
+          path.dirname(node.fileAbsolutePath),
+          path.join(__dirname, '/static/', image)
+        )
+      }
+    }
+  }
+
+  if (node.internal.type === `MarkdownRemark`) {
+    const value = createFilePath({ node, getNode });
+    createNodeField({
+      name: `slug`,
+      node,
+      value,
+    });
+
+    // just to make extra, extra sure. But no, it doesn't work.
+    createNodeField({
+      name: `pageContext`,
+      node,
+      value: {
+        slug:  value
+      }
+    });
+
+    if (
+      Object.prototype.hasOwnProperty.call(node, "frontmatter") &&
+      Object.prototype.hasOwnProperty.call(node.frontmatter, "slug")
+    ) {
+      slug = `/${_.kebabCase(node.frontmatter.slug)}`;
+    }
+    createNodeField({ node, name: "slug", value: slug });
+  }
+
 
   if (node.internal.type === "MarkdownRemark") {
     const fileNode = getNode(node.parent);
@@ -81,6 +127,7 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
     // Add slug as a field on the node.
     createNodeField({ node, name: "slug", value: slug });
 
+    // createNodeField({ node, name: "pathLolNopeContext", value: slug });
     // Separate /docs from /guides for <Sidebar />
     createNodeField({ node, name: "type", value: parsedFilePath.dir });
 
@@ -94,8 +141,8 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
 // This is called after the Gatsby bootstrap is finished
 // so you have access to any information necessary to
 // programatically create pages.
-exports.createPages = ({ graphql, boundActionCreators }) => {
-  const { createPage } = boundActionCreators;
+exports.createPages = ({ graphql, actions }) => {
+  const { createPage } = actions;
 
   return new Promise((resolve, reject) => {
     const docsTemplate = path.resolve("src/templates/docs.js");
@@ -143,7 +190,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
             context: {
               slug: edge.node.fields.slug
             },
-            layout: useSidebar ? "with-sidebar" : "index"
+            layout: "index" // useSidebar ? "with-sidebar" : "index"
           });
         });
       })
@@ -153,12 +200,28 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
 
 // Implement the Gatsby API “onCreatePage”. This is
 // called after every page is created.
-exports.onCreatePage = async ({ page, boundActionCreators }) => {
-  const { createPage } = boundActionCreators;
-  if (page.path.match("/guides/themes/")) {
-    page.layout = "with-sidebar";
-
-    // Update /guides/themes/ to use with-sidebar layout
-    createPage(page);
-  }
+exports.onCreatePage = async ({ page, actions }) => {
+  const { createPage } = actions;
+  // if (page.path.match("/guides/themes/")) {
+  //   page.layout = "with-sidebar";
+  //
+  //   // Update /guides/themes/ to use with-sidebar layout
+  //   createPage(page);
+  // }
 };
+
+
+// exports.onCreateNode = ({node, actions, getNode}) => {
+//   const {createNodeField} = actions;
+//   let slug;
+//   switch (node.internal.type) {
+//     case "MarkdownRemark":
+//       const fileNode = getNode(node.parent);
+//       const [basePath, name] = fileNode.relativePath.split('/');
+//       slug = `/${basePath}/${name}/`;
+//       break;
+//   }
+//   if (slug) {
+//     createNodeField({node, name: slug, value: slug});
+//   }
+// };

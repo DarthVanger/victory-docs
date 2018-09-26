@@ -4,6 +4,7 @@ import Playground from "component-playground";
 import { assign } from "lodash";
 import { Link } from "gatsby";
 
+import MainLayout from "../../layouts";
 import Footer from "../../partials/footer";
 import PureRender from "../../partials/guides/themes/pure-render";
 import DemoComponent from "../../partials/guides/themes/demo-component";
@@ -76,6 +77,7 @@ class Themes extends React.Component {
 
   render() {
     return (
+      <MainLayout>
       <div className="Page-content">
         <article className="Article">
           <div className="Recipe">
@@ -113,6 +115,7 @@ class Themes extends React.Component {
         </article>
         <Footer />
       </div>
+      </MainLayout>
     );
   }
 }
